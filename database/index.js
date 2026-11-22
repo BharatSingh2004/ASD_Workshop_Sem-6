@@ -4,23 +4,29 @@ let products = [
 ];
 
 module.exports = {
-  getProducts: () => products,
-  getProductById: (id) => products.find(p => p.id === parseInt(id)),
+  getProducts: () => [...products],
+  getProductById: (id) => {
+    const numId = parseInt(id, 10);
+    return products.find(p => p.id === numId) || null;
+  },
   createProduct: (product) => {
-    const newProduct = { id: products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1, ...product };
+    const nextId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+    const newProduct = { ...product, id: nextId };
     products.push(newProduct);
     return newProduct;
   },
   updateProduct: (id, data) => {
-    const index = products.findIndex(p => p.id === parseInt(id));
+    const numId = parseInt(id, 10);
+    const index = products.findIndex(p => p.id === numId);
     if (index !== -1) {
-      products[index] = { ...products[index], ...data };
+      products[index] = { ...products[index], ...data, id: numId };
       return products[index];
     }
     return null;
   },
   deleteProduct: (id) => {
-    const index = products.findIndex(p => p.id === parseInt(id));
+    const numId = parseInt(id, 10);
+    const index = products.findIndex(p => p.id === numId);
     if (index !== -1) {
       const deleted = products.splice(index, 1);
       return deleted[0];

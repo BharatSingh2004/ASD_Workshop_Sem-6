@@ -5,8 +5,14 @@ const assert = require('assert');
 async function runTests() {
   console.log('Running tests...');
 
+  // Test 0: GET / should return 200 and API info
+  let res = await request(app).get('/');
+  assert.strictEqual(res.statusCode, 200);
+  assert.strictEqual(res.body.status, 'ok');
+  console.log('Test 0 passed (Root GET /)');
+
   // Test 1: GET /products should return MISS
-  let res = await request(app).get('/products');
+  res = await request(app).get('/products');
   assert.strictEqual(res.headers['x-cache'], 'MISS');
   assert.strictEqual(res.body.length, 2);
   console.log('Test 1 passed');
@@ -35,7 +41,21 @@ async function runTests() {
   assert.strictEqual(res.headers['x-cache'], 'HIT');
   console.log('Test 5 passed');
 
+  // Test 6: Input validation on POST /products
+  res = await request(app).post('/products').send({ name: '' });
+  assert.strictEqual(res.statusCode, 400);
+  console.log('Test 6 passed (Validation)');
+
+  // Test 7: 404 handler for unknown routes
+  res = await request(app).get('/non-existent-route');
+  assert.strictEqual(res.statusCode, 404);
+  assert.strictEqual(res.body.error, 'Not Found');
+  console.log('Test 7 passed (404 Handler)');
+
   console.log('All tests passed successfully!');
 }
 
-runTests().catch(console.error);
+runTests().catch((err) => {
+  console.error('Tests failed:', err);
+  process.exit(1);
+});

@@ -1,10 +1,11 @@
 {
   "name": "asd-bucket",
   "version": "1.0.0",
-  "description": "",
+  "description": "Express REST API with custom in-memory caching",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "test": "node test.js"
   },
   "keywords": [],
   "author": "",
